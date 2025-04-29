@@ -8,7 +8,7 @@ The easiest way to get started is by using our setup script:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Sky-Fighter-game/Sky-Fighter-game.git
+git clone https://github.com/mrokonuzzaman040/Sky-Fighter-game-v2.git
 cd Sky-Fighter-game
 
 # Make the script executable (if needed)
@@ -38,7 +38,7 @@ The `run_sky_warr.sh` script handles everything automatically:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Sky-Fighter-game/Sky-Fighter-game.git
+git clone https://github.com/mrokonuzzaman040/Sky-Fighter-game-v2.git
 cd Sky-Fighter-game
 
 # Run the setup script
@@ -51,7 +51,7 @@ If you're on Windows using Git Bash or WSL, the script should work as well.
 
 ```bash
 # Clone the repository
-git clone https://github.com/Sky-Fighter-game/Sky-Fighter-game.git
+git clone https://github.com/mrokonuzzaman040/Sky-Fighter-game-v2.git
 cd Sky-Fighter-game
 
 # Install the package
