@@ -77,8 +77,8 @@ class Game:
         # Load sounds
         pygame.mixer.init()
         try:
-            self.shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.wav")
-            self.explosion_sound = pygame.mixer.Sound("assets/sounds/explosion.wav")
+            self.shoot_sound = pygame.mixer.Sound("assets/sounds/shoot.mp3")
+            self.explosion_sound = pygame.mixer.Sound("assets/sounds/explosion.mp3")
         except:
             self.shoot_sound = None
             self.explosion_sound = None
