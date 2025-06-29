@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import math
 from pygame.locals import *
 
 from game.player import Player
@@ -277,12 +278,25 @@ class Game:
         # Update enemies
         self.enemies.update(self.height)
         
-        # Enemy shooting
+        # Enemy shooting - limit total enemy bullets on screen
+        max_enemy_bullets = 15  # Maximum enemy bullets allowed on screen
+        current_enemy_bullets = len(self.enemy_bullets)
+        
         for enemy in self.enemies:
-            if enemy.can_fire():
-                bullet_pos = enemy.get_bullet_position()
-                enemy_bullet = EnemyBullet(bullet_pos[0], bullet_pos[1])
-                self.enemy_bullets.add(enemy_bullet)
+            if enemy.can_fire() and current_enemy_bullets < max_enemy_bullets:
+                patterns = enemy.get_bullet_patterns((self.player.rect.centerx, self.player.rect.centery))
+                for pattern in patterns:
+                    if current_enemy_bullets < max_enemy_bullets:
+                        enemy_bullet = EnemyBullet(
+                            pattern['x'], 
+                            pattern['y'], 
+                            pattern['direction'], 
+                            pattern['speed'],
+                            enemy  # Pass enemy as owner
+                        )
+                        self.enemy_bullets.add(enemy_bullet)
+                        enemy.bullets.add(enemy_bullet)  # Track bullet in enemy's group
+                        current_enemy_bullets += 1
         
         # Update boss
         if self.boss:
@@ -337,6 +351,13 @@ class Game:
         collisions = pygame.sprite.groupcollide(self.bullets, self.enemies, True, True)
         for bullet, hit_enemies in collisions.items():
             for enemy in hit_enemies:
+                # Clean up enemy's bullets when enemy dies
+                enemy.destroy_bullets()
+                # Remove enemy bullets from main group
+                for enemy_bullet in list(self.enemy_bullets):
+                    if enemy_bullet.owner == enemy:
+                        enemy_bullet.kill()
+                
                 score_gain = 10 * self.powerup_manager.get_score_multiplier()
                 self.score += score_gain
                 self.enemies_killed_this_level += 1

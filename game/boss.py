@@ -32,7 +32,7 @@ class Boss(pygame.sprite.Sprite):
             self.max_health = 50
             self.health = 50
             self.speed = 2
-            self.fire_rate = 30  # frames between shots
+            self.fire_rate = 1500  # 1.5 seconds between shots
             self.damage = 2
             self.score_value = 500
             self.size = (120, 100)
@@ -40,7 +40,7 @@ class Boss(pygame.sprite.Sprite):
             self.max_health = 100
             self.health = 100
             self.speed = 3
-            self.fire_rate = 20
+            self.fire_rate = 1200  # 1.2 seconds between shots
             self.damage = 3
             self.score_value = 1000
             self.size = (150, 120)
@@ -48,7 +48,7 @@ class Boss(pygame.sprite.Sprite):
             self.max_health = 200
             self.health = 200
             self.speed = 4
-            self.fire_rate = 15
+            self.fire_rate = 1000  # 1 second between shots (more aggressive)
             self.damage = 4
             self.score_value = 2000
             self.size = (180, 150)
@@ -193,11 +193,13 @@ class Boss(pygame.sprite.Sprite):
             self.rect.right = screen_width
     
     def can_fire(self):
-        """Check if boss can fire"""
+        """Check if boss can fire with some randomness"""
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot > self.shot_cooldown:
-            self.last_shot = current_time
-            return True
+            # Add some randomness to boss firing (80% chance to fire when ready)
+            if random.random() < 0.8:
+                self.last_shot = current_time
+                return True
         return False
     
     def get_bullet_positions(self):
@@ -213,13 +215,11 @@ class Boss(pygame.sprite.Sprite):
                 (self.rect.centerx + 30, self.rect.bottom)
             ]
         elif self.boss_type == "final":
-            # Five bullets in spread pattern
+            # Three bullets in spread pattern (reduced from 5 to avoid spam)
             return [
-                (self.rect.centerx - 60, self.rect.bottom),
-                (self.rect.centerx - 30, self.rect.bottom),
+                (self.rect.centerx - 40, self.rect.bottom),
                 (self.rect.centerx, self.rect.bottom),
-                (self.rect.centerx + 30, self.rect.bottom),
-                (self.rect.centerx + 60, self.rect.bottom)
+                (self.rect.centerx + 40, self.rect.bottom)
             ]
     
     def take_damage(self, damage=1):
