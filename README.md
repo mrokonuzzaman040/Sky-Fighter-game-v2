@@ -1,8 +1,51 @@
-# Sky Warr
+# Sky Warr - Advanced Space Fighter
 
-A space shooter game with both single-player and multiplayer modes.
+A feature-rich space shooter game with single-player campaigns, boss battles, power-up systems, and multiplayer support.
 
-## Quick Start
+## 🚀 Features
+
+### Game Modes
+- **Single Player Campaign**: Progress through increasingly difficult levels
+- **Multiplayer**: Real-time cooperative gameplay with friends
+- **Difficulty Levels**: Easy, Normal, and Hard modes
+
+### Combat System
+- **Player Progression**: Gain experience and level up your pilot
+- **Boss Battles**: Epic encounters with unique boss enemies at each level
+- **Power-Up System**: Collect various power-ups to enhance your abilities
+- **Advanced Shooting**: Rapid fire, triple shot, and other combat enhancements
+
+### Power-Ups Available
+- 🩹 **Health**: Restore health points
+- ⚡ **Rapid Fire**: Increased firing rate
+- 🔀 **Triple Shot**: Fire three bullets at once
+- 🛡️ **Shield**: Temporary protection from damage
+- 💨 **Speed Boost**: Enhanced movement speed
+- 💰 **Double Score**: 2x score multiplier
+
+### Level System
+- **Progressive Difficulty**: Enemies become stronger as you advance
+- **Boss Encounters**: Fight unique bosses every few levels
+- **Experience System**: Player levels with improved stats
+- **Dynamic Spawning**: Adaptive enemy and power-up generation
+
+## 🎮 Controls
+
+### Movement
+- **Arrow Keys** or **WASD**: Move your ship
+- **Space**: Shoot bullets
+- **P**: Pause/Unpause game
+- **R**: Restart game (single player only)
+- **ESC**: Exit to main menu
+
+### Gameplay Tips
+1. **Collect Power-ups**: They can dramatically improve your survival chances
+2. **Learn Boss Patterns**: Each boss type has unique movement and attack patterns
+3. **Manage Health**: Use health power-ups strategically
+4. **Level Up**: Killing enemies gives experience points for permanent upgrades
+5. **Shield Timing**: Save shield power-ups for boss battles or difficult moments
+
+## 🛠️ Quick Start
 
 The easiest way to get started is by using our setup script:
 
