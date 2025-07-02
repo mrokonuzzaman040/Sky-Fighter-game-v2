@@ -12,16 +12,37 @@ from game.boss import Boss, BossBullet
 from game.powerup import PowerUp, PowerUpManager
 
 class Game:
-    def __init__(self, difficulty="normal", multiplayer=False, client=None):
+    def __init__(self, difficulty="normal", multiplayer=False, client=None, 
+                 screen_mode="windowed", screen_size="800x600"):
         self.difficulty = difficulty
-        self.width = 800
-        self.height = 600
+        self.screen_mode = screen_mode
+        self.screen_size = screen_size
+        
+        # Parse screen size
+        if screen_size and 'x' in screen_size:
+            width_str, height_str = screen_size.split('x')
+            self.width = int(width_str)
+            self.height = int(height_str)
+        else:
+            self.width = 800
+            self.height = 600
+            
         self.multiplayer = multiplayer
         self.client = client
         self.player_id = 0  # Will be set by server in multiplayer mode
         
-        # Set up display
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        # Set up display based on screen mode
+        if screen_mode == "fullscreen":
+            # Get the display info for fullscreen
+            pygame.display.init()
+            info = pygame.display.Info()
+            self.width = info.current_w
+            self.height = info.current_h
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        else:
+            # Windowed mode with resizable window
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+            
         pygame.display.set_caption("Sky Warr - In Game")
         
         # Set up clock
@@ -78,11 +99,7 @@ class Game:
     def load_assets(self):
         """Load game assets like images and sounds"""
         # Background
-        try:
-            self.background = pygame.image.load("assets/images/sky_bg.jpg").convert()
-            self.background = pygame.transform.scale(self.background, (self.width, self.height))
-        except:
-            self.background = None
+        self.load_background()
             
         # Load fonts
         pygame.font.init()
@@ -210,6 +227,9 @@ class Game:
                 self.running = False
                 if self.multiplayer and self.client:
                     self.client.disconnect()
+            elif event.type == pygame.VIDEORESIZE:
+                # Handle window resize
+                self.handle_window_resize(event.w, event.h)
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.running = False
@@ -217,6 +237,9 @@ class Game:
                         self.client.disconnect()
                 elif event.key == K_p:
                     self.paused = not self.paused
+                elif event.key == K_F11:
+                    # Toggle fullscreen
+                    self.toggle_fullscreen()
                 elif event.key == K_SPACE and not self.game_over and not self.paused:
                     self.handle_shooting()
                 elif event.key == K_r and self.game_over:
@@ -253,7 +276,7 @@ class Game:
         
         # Update player
         keys = pygame.key.get_pressed()
-        self.player.update(keys, self.width)
+        self.player.update(keys, self.width, self.height)
         
         # In multiplayer, send our position and get remote player's position
         if self.multiplayer and self.client:
@@ -464,8 +487,69 @@ class Game:
         self.init_game_objects()
         self.set_player_difficulty(self.difficulty)
         
-        # Reset player stats to defaults (since we just created a new player)
-        self.player.reset_to_defaults()
+    def toggle_fullscreen(self):
+        """Toggle between fullscreen and windowed mode"""
+        if self.screen_mode == "fullscreen":
+            # Switch to windowed mode
+            self.screen_mode = "windowed"
+            # Parse the original screen size
+            if self.screen_size and 'x' in self.screen_size:
+                width_str, height_str = self.screen_size.split('x')
+                self.width = int(width_str)
+                self.height = int(height_str)
+            else:
+                self.width = 800
+                self.height = 600
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+        else:
+            # Switch to fullscreen mode
+            self.screen_mode = "fullscreen"
+            pygame.display.init()
+            info = pygame.display.Info()
+            self.width = info.current_w
+            self.height = info.current_h
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        
+        # Reload and rescale background for new screen size
+        self.load_background()
+    
+    def handle_window_resize(self, new_width, new_height):
+        """Handle pygame window resize events"""
+        # Set minimum window size to maintain playability
+        min_width = 600
+        min_height = 450
+        
+        # Enforce minimum dimensions
+        new_width = max(new_width, min_width)
+        new_height = max(new_height, min_height)
+        
+        # Update screen dimensions
+        self.width = new_width
+        self.height = new_height
+        
+        # Recreate the display surface with new size
+        if self.screen_mode == "fullscreen":
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+        
+        # Reload and rescale background for new screen size
+        self.load_background()
+        
+        # Adjust player position if it's outside new screen bounds
+        if hasattr(self, 'player'):
+            if self.player.rect.right > self.width:
+                self.player.rect.right = self.width
+            if self.player.rect.bottom > self.height:
+                self.player.rect.bottom = self.height
+    
+    def load_background(self):
+        """Load and scale background image for current screen size"""
+        try:
+            self.background = pygame.image.load("assets/images/sky_bg.jpg").convert()
+            self.background = pygame.transform.scale(self.background, (self.width, self.height))
+        except:
+            self.background = None
     
     def render(self):
         """Render the game"""
@@ -595,6 +679,21 @@ class Game:
             message_text = self.font.render(self.powerup_message, True, (255, 255, 0))
             text_rect = message_text.get_rect(center=(self.width//2, self.height//2 - 100))
             self.screen.blit(message_text, text_rect)
+        
+        # Draw controls info (bottom right)
+        controls_y = self.height - 80
+        controls_info = [
+            f"F11: Toggle Fullscreen ({self.screen_mode})",
+            "Resize: Drag window corners",
+            "P: Pause | ESC: Exit | R: Restart"
+        ]
+        
+        for i, info in enumerate(controls_info):
+            control_text = self.small_font.render(info, True, (200, 200, 200))
+            text_rect = control_text.get_rect()
+            text_rect.right = self.width - 10
+            text_rect.y = controls_y + (i * 20)
+            self.screen.blit(control_text, text_rect)
     
     def draw_health_bar(self):
         """Draw player health bar"""

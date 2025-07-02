@@ -36,7 +36,15 @@ A feature-rich space shooter game with single-player campaigns, boss battles, po
 - **Space**: Shoot bullets
 - **P**: Pause/Unpause game
 - **R**: Restart game (single player only)
+- **F11**: Toggle between fullscreen and windowed mode
 - **ESC**: Exit to main menu
+
+### Screen Options
+- **Multiple Window Sizes**: Choose from 800x600, 1024x768, 1280x720, 1366x768, 1600x900, 1920x1080
+- **Resizable Windows**: Both menu and game windows can be resized by dragging corners
+- **Fullscreen Mode**: Press F11 during gameplay or set in settings before starting
+- **Windowed Mode**: Play in a resizable window for multitasking
+- **Smart Scaling**: Background and UI elements automatically adapt to window size
 
 ### Gameplay Tips
 1. **Collect Power-ups**: They can dramatically improve your survival chances

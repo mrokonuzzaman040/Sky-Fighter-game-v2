@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
             (28, 10), (32, 10), (30, 5)
         ])
     
-    def update(self, keys, screen_width):
+    def update(self, keys, screen_width, screen_height=600):
         # Move player based on key presses
         if keys[K_LEFT] or keys[K_a]:
             self.rect.x -= self.speed
@@ -82,10 +82,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.left = 0
         if self.rect.right > screen_width:
             self.rect.right = screen_width
-        if self.rect.top < screen_width // 2:  # Don't go too high up
-            self.rect.top = screen_width // 2
-        if self.rect.bottom > 600:
-            self.rect.bottom = 600
+        if self.rect.top < screen_height // 2:  # Don't go too high up
+            self.rect.top = screen_height // 2
+        if self.rect.bottom > screen_height:
+            self.rect.bottom = screen_height
     
     def can_shoot(self, rapid_fire_active=False):
         """Check if player can shoot based on cooldown"""

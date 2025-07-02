@@ -24,7 +24,10 @@ class SkyWarr:
         self.root = tk.Tk()
         self.root.title("Sky Warr")
         self.root.geometry("800x600")
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)  # Allow window resizing and maximizing
+        
+        # Set minimum window size to maintain usability
+        self.root.minsize(600, 480)
         
         # Set icon if available
         try:
@@ -42,19 +45,19 @@ class SkyWarr:
         self.game = None
         self.client = None
     
-    def start_game(self, difficulty="normal"):
-        """Start the single-player game with the selected difficulty"""
+    def start_game(self, difficulty="normal", screen_mode="windowed", screen_size="800x600"):
+        """Start the single-player game with the selected difficulty and screen settings"""
         # Hide Tkinter window
         self.root.withdraw()
         
         # Start the game
-        self.game = Game(difficulty)
+        self.game = Game(difficulty, screen_mode=screen_mode, screen_size=screen_size)
         self.game.run()
         
         # When game ends, show Tkinter window again
         self.root.deiconify()
     
-    def start_multiplayer(self, server_address, is_host=False):
+    def start_multiplayer(self, server_address, is_host=False, screen_mode="windowed", screen_size="800x600"):
         """Start a multiplayer game"""
         # Hide Tkinter window
         self.root.withdraw()
@@ -71,7 +74,8 @@ class SkyWarr:
         # Try to connect
         if self.client.connect():
             # Start the game in multiplayer mode
-            self.game = Game("normal", multiplayer=True, client=self.client)
+            self.game = Game("normal", multiplayer=True, client=self.client, 
+                           screen_mode=screen_mode, screen_size=screen_size)
             self.game.run()
         else:
             # Connection failed
